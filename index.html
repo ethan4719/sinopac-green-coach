@@ -31,22 +31,25 @@
 
         /* 手機外框模擬 */
         .iphone-frame {
-    /* 高度跟著螢幕走，確保整支手機剛好塞進視窗 */
-    height: calc(100vh - 40px);                 /* 留一點上、下邊距 */
-    max-height: 812px;                          /* 在大螢幕時不要超過原本設計高度 */
-    width: calc((100vh - 40px) * 0.462);        /* 依 375 / 812 比例算出寬度 */
-    max-width: 375px;                           /* 大螢幕時維持原本寬度 */
+    /* ⭐ 以寬度為主，手機模型永遠不會超過畫面寬度 */
+    width: 100%;                 /* 寬度撐滿可用空間 */
+    max-width: 375px;            /* 上限為原本設計寬度 375px（iPhone X 寬） */
+
+    /* ⭐ 用 CSS aspect-ratio 維持 375:812 的長寬比例，避免被拉扁 */
+    aspect-ratio: 375 / 812;
+
+    /* ⭐ 限制高度不要高過螢幕，確保整支手機可以塞進視窗 */
+    max-height: calc(100vh - 40px);
 
     background-color: var(--app-bg);
-    border-radius: 40px;
-    box-shadow: 0 0 50px rgba(0,0,0,0.5);
+    border-radius: 40px;         /* 手機外框圓角（如果覺得太大也可以之後改小一點） */
+    box-shadow: 0 0 50px rgba(0,0,0,0.5); /* 外框陰影 */
     position: relative;
-    overflow: hidden;
+    overflow: hidden;            /* 內容超出就裁掉，避免露出邊框外 */
     display: flex;
     flex-direction: column;
-    border: 8px solid #000;
+    border: 8px solid #000;      /* 手機外框黑色邊 */
 }
-        }
 
         /* 狀態列 */
         .status-bar {
