@@ -18,16 +18,16 @@
             --text-grey: #888888;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-body {
+    background-color: #333; /* 背景深色，凸顯手機模型 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;      /* 至少撐滿整個螢幕高度 */
 
-        body {
-            background-color: #333; /* 網頁背景深色，突顯手機 */
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-    padding: 8px;          /* 四周留一點空隙，畫面比較好看 */
-        }
+    overflow: hidden;       /* ⭐ 不讓整個網頁上下捲動，只在手機畫面內捲 */
+    padding: 8px;           /* ⭐ 四周留一點空隙，避免手機殼貼到螢幕邊緣 */
+}
 
         /* 手機外框模擬 */
         .iphone-frame {
