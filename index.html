@@ -26,20 +26,27 @@
             justify-content: center;
             align-items: center;
             min-height: 100vh;
+            overflow: hidden;      /* 不要讓整個網頁可以上下捲動 */
+    padding: 8px;          /* 四周留一點空隙，畫面比較好看 */
         }
 
         /* 手機外框模擬 */
         .iphone-frame {
-            width: 375px;
-            height: 812px;
-            background-color: var(--app-bg);
-            border-radius: 40px;
-            box-shadow: 0 0 50px rgba(0,0,0,0.5);
-            position: relative;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            border: 8px solid #000;
+    /* 高度跟著螢幕走，確保整支手機剛好塞進視窗 */
+    height: calc(100vh - 40px);                 /* 留一點上、下邊距 */
+    max-height: 812px;                          /* 在大螢幕時不要超過原本設計高度 */
+    width: calc((100vh - 40px) * 0.462);        /* 依 375 / 812 比例算出寬度 */
+    max-width: 375px;                           /* 大螢幕時維持原本寬度 */
+
+    background-color: var(--app-bg);
+    border-radius: 40px;
+    box-shadow: 0 0 50px rgba(0,0,0,0.5);
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    border: 8px solid #000;
+}
         }
 
         /* 狀態列 */
