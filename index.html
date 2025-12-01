@@ -103,7 +103,7 @@
             <i class="fa-solid fa-medal text-yellow-400 mr-1"></i>職業運動經理人
         </h1>
         <p class="text-slate-500 text-xs md:text-base font-medium bg-white px-3 py-0.5 rounded-full inline-block shadow-sm">
-            景觀社會篇 • 命運輪盤版
+            運動消費社會篇 • 命運輪盤版
         </p>
     </div>
 
@@ -419,11 +419,11 @@
         }
 
         function checkGameOver() {
-            if (state.funds <= 0) return { type: 'lose', title: "破產啦！", msg: "沒錢萬萬不能，球隊被拍賣了。", critique: "在資本主義社會，沒有資金就沒有話語權。" };
-            if (state.purists <= 0) return { type: 'lose', title: "失去靈魂", msg: "死忠球迷全跑光了，球隊變成了馬戲團。", critique: "過度追求景觀，讓體育失去了最純粹的競爭意義。" };
-            if (state.casuals <= 0) return { type: 'lose', title: "沒人氣", msg: "門可羅雀，沒有票房支撐，聯盟倒閉。", critique: "職業運動本質是體驗經濟，拒絕大眾就是拒絕生存。" };
-            if (state.skill <= 0) return { type: 'lose', title: "戰績崩壞", msg: "一直輸球，連最鐵的球迷都看不下去了。", critique: "無論包裝多好，競技實力仍然是體育的核心。" };
-            if (state.turn > state.maxTurns) return { type: 'win', title: "傳奇經理人", msg: "恭喜！你成功在現實與理想中找到了平衡。", critique: "你證明了體育既可以是生意，也可以是信仰。完美！" };
+            if (state.funds <= 0) return { type: 'lose', title: "破產啦！", msg: "沒錢萬萬不能，球隊被拍賣了。", critique: "在資本主義社會，沒有資金就沒有話語權，去賺錢吧窮鬼" };
+            if (state.purists <= 0) return { type: 'lose', title: "失去靈魂", msg: "死忠球迷全跑光了，球隊變成了馬戲團。", critique: "過度追求理想，現實卻很骨感的讓體育失去了最純粹的競爭意義。" };
+            if (state.casuals <= 0) return { type: 'lose', title: "沒人氣", msg: "門可羅雀，沒有票房支撐，聯盟倒閉。", critique: "職業運動本質是體驗經濟，拒絕大眾就是拒絕生存，但可以接受下一餐吃麥噹勞" };
+            if (state.skill <= 0) return { type: 'lose', title: "戰績崩壞", msg: "一直輸球，連最鐵的球迷都看不下去了。", critique: "無論包裝多好，競技實力仍然是體育的核心。建議你現在放下手機，趕快去練習" };
+            if (state.turn > state.maxTurns) return { type: 'win', title: "傳奇經理人", msg: "恭喜！你成功在現實與理想中找到了平衡。", critique: "你證明了體育既可以是生意，也可以是信仰。現在你獲得了獎品是陳明豪的哀居，完美！" };
             
             return null;
         }
