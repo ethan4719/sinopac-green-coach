@@ -2,11 +2,10 @@
 <html lang="zh-Hant">
 <head>
   <meta charset="UTF-8" />
-  <title>轉盤抽獎 Demo</title>
+  <title>期末歐趴轉盤</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <style>
-    /* 重置一些預設樣式 */
     * {
       box-sizing: border-box;
       margin: 0;
@@ -24,9 +23,9 @@
 
     /* 手機外框 */
     .phone {
-      width: 390px;            /* 接近 iPhone 14 的寬度 */
+      width: 390px;
       max-width: 100%;
-      height: 844px;           /* 接近 iPhone 14 的高度 */
+      height: 844px;
       max-height: 100vh;
       border-radius: 36px;
       padding: 16px;
@@ -41,7 +40,6 @@
       color: #fff;
     }
 
-    /* 上方小黑條（模擬聽筒、鏡頭區） */
     .phone-notch {
       width: 160px;
       height: 26px;
@@ -50,10 +48,9 @@
       margin: 0 auto 12px auto;
     }
 
-    /* 內容區 */
     .phone-inner {
       flex: 1;
-      background: radial-gradient(circle at top, #3949ab 0, #111320 45%, #050712 100%);
+      background: radial-gradient(circle at top, #e0a96d 0, #fdf1dc 40%, #f7d9a8 100%);
       border-radius: 24px;
       padding: 20px 16px;
       display: flex;
@@ -65,6 +62,7 @@
     .app-title {
       text-align: center;
       margin-bottom: 8px;
+      color: #7a2c16;
     }
 
     .app-title h1 {
@@ -74,11 +72,10 @@
 
     .app-title p {
       font-size: 12px;
-      opacity: 0.75;
+      opacity: 0.85;
       margin-top: 4px;
     }
 
-    /* 轉盤區域 */
     .wheel-wrapper {
       margin-top: 12px;
       flex: 1;
@@ -87,6 +84,7 @@
       align-items: center;
       justify-content: center;
       gap: 12px;
+      width: 100%;
     }
 
     .wheel-container {
@@ -95,18 +93,17 @@
       height: 260px;
     }
 
-    /* 這裡放你的轉盤圖片 */
+    /* 轉盤圖片（準備一張圓形轉盤圖 wheel.png） */
     #wheel {
       width: 100%;
       height: 100%;
       border-radius: 50%;
       display: block;
       transition: transform 4s cubic-bezier(0.2, 0.7, 0.1, 1);
-      /* 初始角度 0 度 */
       transform: rotate(0deg);
     }
 
-    /* 指針，可以是你的 png 圖片，也可以用簡單的三角形 */
+    /* 指針 */
     .pointer {
       position: absolute;
       top: -10px;
@@ -120,7 +117,6 @@
       align-items: center;
     }
 
-    /* 如果你有自己的 pointer.png，就把底下這個刪掉，改成 <img> */
     .pointer::before {
       content: "";
       width: 0;
@@ -131,7 +127,6 @@
       filter: drop-shadow(0 0 4px rgba(0,0,0,0.6));
     }
 
-    /* 抽獎按鈕 */
     .btn-draw {
       margin-top: 8px;
       padding: 12px 32px;
@@ -141,9 +136,9 @@
       font-weight: 600;
       letter-spacing: 2px;
       text-transform: uppercase;
-      background: linear-gradient(120deg, #ff9800, #ffc107);
-      box-shadow: 0 6px 16px rgba(0,0,0,0.6);
-      color: #222;
+      background: linear-gradient(120deg, #ff7043, #ffb74d);
+      box-shadow: 0 6px 16px rgba(0,0,0,0.5);
+      color: #3e1b09;
       cursor: pointer;
       transition: transform 0.1s, box-shadow 0.1s, opacity 0.2s;
     }
@@ -160,20 +155,22 @@
       box-shadow: none;
     }
 
-    /* 結果顯示 */
     .result {
       margin-top: 12px;
       text-align: center;
       min-height: 40px;
-      padding: 6px 12px;
-      border-radius: 12px;
-      background: rgba(0,0,0,0.25);
+      padding: 8px 12px 10px;
+      border-radius: 16px;
+      background: rgba(255,255,255,0.7);
+      color: #7a2c16;
       font-size: 14px;
       line-height: 1.4;
+      width: 100%;
+      max-width: 340px;
     }
 
     .result span.label {
-      opacity: 0.75;
+      opacity: 0.9;
       font-size: 12px;
     }
 
@@ -182,15 +179,30 @@
       margin-top: 4px;
       font-size: 18px;
       font-weight: 700;
-      color: #ffeb3b;
     }
 
-    /* 底部說明 */
+    .result span.hint {
+      display: block;
+      margin-top: 4px;
+      font-size: 12px;
+      opacity: 0.8;
+    }
+
+    .result-img {
+      margin-top: 8px;
+      width: 70%;
+      max-height: 260px;
+      object-fit: contain;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.25);
+    }
+
     .footer-tip {
-      margin-top: 10px;
+      margin-top: 8px;
       font-size: 11px;
-      opacity: 0.6;
+      opacity: 0.7;
       text-align: center;
+      color: #7a2c16;
     }
 
     @media (max-height: 700px) {
@@ -209,42 +221,54 @@
     <div class="phone-notch"></div>
     <div class="phone-inner">
       <header class="app-title">
-        <h1>幸運轉盤</h1>
-        <p>點擊下方按鈕開始抽獎</p>
+        <h1>我的歐趴糖是…？</h1>
+        <p>點擊下方開始，抽出你的期末歐趴小點心 🍪</p>
       </header>
 
       <main class="wheel-wrapper">
         <div class="wheel-container">
-          <!-- 指針：如果你有自己的圖片，改成：
-               <img src="pointer.png" class="pointer-img" alt="pointer">
-               然後刪掉 .pointer::before 的 CSS -->
           <div class="pointer"></div>
-
-          <!-- 轉盤圖片：請把 wheel.png 換成你自己的轉盤圖片 -->
+          <!-- 轉盤圖：請把 wheel.png 換成你的檔名 -->
           <img id="wheel" src="wheel.png" alt="轉盤">
         </div>
 
         <button class="btn-draw" id="drawBtn">開始抽獎</button>
 
         <div class="result" id="resultBox">
-          <span class="label">抽獎結果會顯示在這裡</span>
+          <span class="label">抽到的歐趴糖會顯示在這裡唷 ✨</span>
         </div>
 
         <p class="footer-tip">
-          ※ Demo 用純前端 HTML/CSS/JS，不需後端即可試玩
+          學務處課外組 誠摯祝福大家期末順利歐趴！
         </p>
       </main>
     </div>
   </div>
 
   <script>
-    // 你可以在這裡設定獎項文字
-    const prizes = [
-      '🎉 一獎：500 元折價券',
-      '🎁 二獎：神秘小禮物',
-      '🍀 三獎：免運券',
-      '⭐ 四獎：下次多抽一次機會',
-      '😊 五獎：感謝參與'
+    // ====== 這裡設定 4 種餅乾 + 再抽一次 😈 ======
+    // 請把 img 的檔名改成你存圖的檔名
+    const prizeData = [
+      {
+        name: '小熊餅乾（藍色）',
+        img: 'koala-blue.jpg'      // 這裡改成你的檔名
+      },
+      {
+        name: '小熊餅乾（黑色）',
+        img: 'koala-black.jpg'
+      },
+      {
+        name: 'Pepero 餅乾（藍色）',
+        img: 'pepero-blue.jpg'
+      },
+      {
+        name: 'Pepero 餅乾（白色）',
+        img: 'pepero-white.jpg'
+      },
+      {
+        name: '再抽一次 嘿嘿嘿 😈',
+        img: null                  // 不顯示圖片，只顯示文字
+      }
     ];
 
     const wheel = document.getElementById('wheel');
@@ -259,37 +283,39 @@
 
       isSpinning = true;
       drawBtn.disabled = true;
-      resultBox.innerHTML = '<span class="label">轉盤轉動中...</span>';
+      resultBox.innerHTML = '<span class="label">轉盤轉動中，祝你歐趴～</span>';
 
-      // 隨機抽一個獎項（文字顯示用）
-      const randomIndex = Math.floor(Math.random() * prizes.length);
-      const prizeText = prizes[randomIndex];
+      // 隨機抽一個獎項
+      const randomIndex = Math.floor(Math.random() * prizeData.length);
+      const prize = prizeData[randomIndex];
 
-      // 設定轉動圈數（越大圈越久）
-      const extraTurns = 4 + Math.floor(Math.random() * 3); // 4~6 圈
-
-      // 隨機一個停下來的角度（0~360）
+      // 設定轉動圈數（4~6 圈）
+      const extraTurns = 4 + Math.floor(Math.random() * 3);
       const randomAngle = Math.floor(Math.random() * 360);
-
-      // 最終角度 = 目前角度 + (多轉幾圈) + 隨機角度
       const targetRotation = currentRotation + extraTurns * 360 + randomAngle;
-
-      // 記錄目前的角度（取模 360 避免數字太大）
       currentRotation = targetRotation % 360;
-
-      // 套用旋轉
       wheel.style.transform = `rotate(${targetRotation}deg)`;
 
-      // 等動畫結束後再顯示結果（動畫時間 4s）
       setTimeout(() => {
         isSpinning = false;
         drawBtn.disabled = false;
 
-        resultBox.innerHTML = `
-          <span class="label">恭喜！本次抽中：</span>
-          <span class="value">${prizeText}</span>
-        `;
-      }, 4000); // 要和 CSS transition 的時間一樣
+        // 顯示結果
+        if (prize.img) {
+          resultBox.innerHTML = `
+            <span class="label">恭喜！你的歐趴糖是：</span>
+            <span class="value">${prize.name}</span>
+            <img src="${prize.img}" alt="${prize.name}" class="result-img">
+          `;
+        } else {
+          // 再抽一次 😈
+          resultBox.innerHTML = `
+            <span class="label">嘿嘿嘿～你抽到的是：</span>
+            <span class="value">再抽一次 😈</span>
+            <span class="hint">再按一次「開始抽獎」試試看～</span>
+          `;
+        }
+      }, 4000); // 要和 CSS 的 transition 時間一樣
     });
   </script>
 </body>
