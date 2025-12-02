@@ -1,585 +1,296 @@
 <!DOCTYPE html>
-<html lang="zh-TW">
+<html lang="zh-Hant">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>職業運動經理人：命運輪盤版 (Mobile)</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Noto Sans TC', sans-serif;
-            background-color: #f0f4f8;
-            color: #334155;
-            /* 防止手機下拉刷新影響遊戲體驗 */
-            overscroll-behavior-y: none;
-        }
+  <meta charset="UTF-8" />
+  <title>轉盤抽獎 Demo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        .title-font { font-family: 'Fredoka', sans-serif; }
+  <style>
+    /* 重置一些預設樣式 */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
 
-        .game-card {
-            background: white;
-            border-radius: 20px; /* 手機上圓角稍微縮小一點 */
-            box-shadow: 0 4px 15px -3px rgba(0, 0, 0, 0.05);
-            border: 2px solid #e2e8f0;
-            transition: transform 0.2s;
-        }
+    body {
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #0c0f17;
+    }
 
-        .btn-action {
-            transition: all 0.2s;
-            border-bottom: 4px solid rgba(0,0,0,0.1);
-            /* 增加手機點擊區域 */
-            min-height: 44px; 
-        }
-        .btn-action:active {
-            transform: translateY(2px);
-            border-bottom-width: 0px;
-        }
+    /* 手機外框 */
+    .phone {
+      width: 390px;            /* 接近 iPhone 14 的寬度 */
+      max-width: 100%;
+      height: 844px;           /* 接近 iPhone 14 的高度 */
+      max-height: 100vh;
+      border-radius: 36px;
+      padding: 16px;
+      background: linear-gradient(145deg, #1e1f2b, #151623);
+      box-shadow:
+        0 0 0 4px #000,
+        0 20px 40px rgba(0,0,0,0.6);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      color: #fff;
+    }
 
-        /* 輪盤響應式調整 */
-        .wheel-container {
-            /* 手機版：使用相對寬度 */
-            width: 75vw; 
-            height: 75vw;
-            /* 電腦版：限制最大尺寸 */
-            max-width: 300px;
-            max-height: 300px;
-            border-radius: 50%;
-            border: 6px solid white;
-            box-shadow: 0 0 20px rgba(0,0,0,0.1);
-            position: relative;
-            overflow: hidden;
-            transition: transform 4s cubic-bezier(0.17, 0.67, 0.12, 0.99);
-            margin: 0 auto; /* 置中 */
-        }
-        
-        .wheel-segment {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            clip-path: polygon(50% 50%, 100% 0, 100% 100%);
-            background: conic-gradient(
-                #FF8B94 0deg 60deg,
-                #FFAAA5 60deg 120deg,
-                #FFD3B6 120deg 180deg,
-                #DCEDC1 180deg 240deg,
-                #A8E6CF 240deg 300deg,
-                #84D0FF 300deg 360deg
-            );
-        }
+    /* 上方小黑條（模擬聽筒、鏡頭區） */
+    .phone-notch {
+      width: 160px;
+      height: 26px;
+      background: #000;
+      border-radius: 0 0 16px 16px;
+      margin: 0 auto 12px auto;
+    }
 
-        .wheel-pointer {
-            width: 0;
-            height: 0; 
-            border-left: 12px solid transparent; /* 稍微縮小 */
-            border-right: 12px solid transparent;
-            border-top: 24px solid #334155;
-            position: absolute;
-            top: -5px;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 20;
-            filter: drop-shadow(0 2px 2px rgba(0,0,0,0.2));
-        }
+    /* 內容區 */
+    .phone-inner {
+      flex: 1;
+      background: radial-gradient(circle at top, #3949ab 0, #111320 45%, #050712 100%);
+      border-radius: 24px;
+      padding: 20px 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      overflow: hidden;
+    }
 
-        .bar-fill { transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1); }
-        
-        /* 自定義滾動條隱藏但可滾動 */
-        .custom-scroll::-webkit-scrollbar {
-            width: 4px;
-        }
-        .custom-scroll::-webkit-scrollbar-thumb {
-            background-color: #cbd5e1;
-            border-radius: 4px;
-        }
-    </style>
+    .app-title {
+      text-align: center;
+      margin-bottom: 8px;
+    }
+
+    .app-title h1 {
+      font-size: 20px;
+      letter-spacing: 2px;
+    }
+
+    .app-title p {
+      font-size: 12px;
+      opacity: 0.75;
+      margin-top: 4px;
+    }
+
+    /* 轉盤區域 */
+    .wheel-wrapper {
+      margin-top: 12px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+    }
+
+    .wheel-container {
+      position: relative;
+      width: 260px;
+      height: 260px;
+    }
+
+    /* 這裡放你的轉盤圖片 */
+    #wheel {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      display: block;
+      transition: transform 4s cubic-bezier(0.2, 0.7, 0.1, 1);
+      /* 初始角度 0 度 */
+      transform: rotate(0deg);
+    }
+
+    /* 指針，可以是你的 png 圖片，也可以用簡單的三角形 */
+    .pointer {
+      position: absolute;
+      top: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 40px;
+      height: 40px;
+      z-index: 10;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    /* 如果你有自己的 pointer.png，就把底下這個刪掉，改成 <img> */
+    .pointer::before {
+      content: "";
+      width: 0;
+      height: 0;
+      border-left: 12px solid transparent;
+      border-right: 12px solid transparent;
+      border-bottom: 20px solid #ffeb3b;
+      filter: drop-shadow(0 0 4px rgba(0,0,0,0.6));
+    }
+
+    /* 抽獎按鈕 */
+    .btn-draw {
+      margin-top: 8px;
+      padding: 12px 32px;
+      border-radius: 30px;
+      border: none;
+      font-size: 16px;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      background: linear-gradient(120deg, #ff9800, #ffc107);
+      box-shadow: 0 6px 16px rgba(0,0,0,0.6);
+      color: #222;
+      cursor: pointer;
+      transition: transform 0.1s, box-shadow 0.1s, opacity 0.2s;
+    }
+
+    .btn-draw:active {
+      transform: translateY(2px);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.6);
+    }
+
+    .btn-draw:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    /* 結果顯示 */
+    .result {
+      margin-top: 12px;
+      text-align: center;
+      min-height: 40px;
+      padding: 6px 12px;
+      border-radius: 12px;
+      background: rgba(0,0,0,0.25);
+      font-size: 14px;
+      line-height: 1.4;
+    }
+
+    .result span.label {
+      opacity: 0.75;
+      font-size: 12px;
+    }
+
+    .result span.value {
+      display: block;
+      margin-top: 4px;
+      font-size: 18px;
+      font-weight: 700;
+      color: #ffeb3b;
+    }
+
+    /* 底部說明 */
+    .footer-tip {
+      margin-top: 10px;
+      font-size: 11px;
+      opacity: 0.6;
+      text-align: center;
+    }
+
+    @media (max-height: 700px) {
+      .phone {
+        height: 100vh;
+      }
+      .wheel-container {
+        width: 220px;
+        height: 220px;
+      }
+    }
+  </style>
 </head>
-<body class="min-h-screen flex flex-col items-center py-4 px-3 md:py-6 md:px-4">
+<body>
+  <div class="phone">
+    <div class="phone-notch"></div>
+    <div class="phone-inner">
+      <header class="app-title">
+        <h1>幸運轉盤</h1>
+        <p>點擊下方按鈕開始抽獎</p>
+      </header>
 
-    <div class="text-center mb-4">
-        <h1 class="text-2xl md:text-5xl font-bold text-slate-700 title-font tracking-wide mb-1">
-            <i class="fa-solid fa-medal text-yellow-400 mr-1"></i>職業運動經理人
-        </h1>
-        <p class="text-slate-500 text-xs md:text-base font-medium bg-white px-3 py-0.5 rounded-full inline-block shadow-sm">
-            運動消費社會篇 • 命運輪盤版
+      <main class="wheel-wrapper">
+        <div class="wheel-container">
+          <!-- 指針：如果你有自己的圖片，改成：
+               <img src="pointer.png" class="pointer-img" alt="pointer">
+               然後刪掉 .pointer::before 的 CSS -->
+          <div class="pointer"></div>
+
+          <!-- 轉盤圖片：請把 wheel.png 換成你自己的轉盤圖片 -->
+          <img id="wheel" src="wheel.png" alt="轉盤">
+        </div>
+
+        <button class="btn-draw" id="drawBtn">開始抽獎</button>
+
+        <div class="result" id="resultBox">
+          <span class="label">抽獎結果會顯示在這裡</span>
+        </div>
+
+        <p class="footer-tip">
+          ※ Demo 用純前端 HTML/CSS/JS，不需後端即可試玩
         </p>
+      </main>
     </div>
+  </div>
 
-    <div id="game-container" class="w-full max-w-5xl relative pb-20"> <div class="game-card p-3 mb-4 grid grid-cols-2 gap-3 md:grid-cols-4 md:gap-6 sticky top-0 z-40 bg-white/95 backdrop-blur shadow-md">
-            <div class="flex flex-col">
-                <div class="flex justify-between items-center mb-1">
-                    <span class="text-[10px] md:text-xs font-bold text-slate-400 uppercase">營運資金</span>
-                    <i class="fa-solid fa-sack-dollar text-emerald-500 text-sm"></i>
-                </div>
-                <div class="w-full bg-slate-100 h-2 md:h-3 rounded-full overflow-hidden">
-                    <div id="bar-funds" class="bar-fill h-full bg-emerald-400 rounded-full" style="width: 50%"></div>
-                </div>
-            </div>
+  <script>
+    // 你可以在這裡設定獎項文字
+    const prizes = [
+      '🎉 一獎：500 元折價券',
+      '🎁 二獎：神秘小禮物',
+      '🍀 三獎：免運券',
+      '⭐ 四獎：下次多抽一次機會',
+      '😊 五獎：感謝參與'
+    ];
 
-            <div class="flex flex-col">
-                <div class="flex justify-between items-center mb-1">
-                    <span class="text-[10px] md:text-xs font-bold text-slate-400 uppercase">死忠球迷</span>
-                    <i class="fa-solid fa-glasses text-blue-500 text-sm"></i>
-                </div>
-                <div class="w-full bg-slate-100 h-2 md:h-3 rounded-full overflow-hidden">
-                    <div id="bar-purists" class="bar-fill h-full bg-blue-400 rounded-full" style="width: 50%"></div>
-                </div>
-            </div>
+    const wheel = document.getElementById('wheel');
+    const drawBtn = document.getElementById('drawBtn');
+    const resultBox = document.getElementById('resultBox');
 
-            <div class="flex flex-col">
-                <div class="flex justify-between items-center mb-1">
-                    <span class="text-[10px] md:text-xs font-bold text-slate-400 uppercase">娛樂粉絲</span>
-                    <i class="fa-solid fa-camera text-rose-400 text-sm"></i>
-                </div>
-                <div class="w-full bg-slate-100 h-2 md:h-3 rounded-full overflow-hidden">
-                    <div id="bar-casuals" class="bar-fill h-full bg-rose-400 rounded-full" style="width: 50%"></div>
-                </div>
-            </div>
+    let isSpinning = false;
+    let currentRotation = 0;
 
-            <div class="flex flex-col">
-                <div class="flex justify-between items-center mb-1">
-                    <span class="text-[10px] md:text-xs font-bold text-slate-400 uppercase">球隊戰績</span>
-                    <i class="fa-solid fa-trophy text-amber-500 text-sm"></i>
-                </div>
-                <div class="w-full bg-slate-100 h-2 md:h-3 rounded-full overflow-hidden">
-                    <div id="bar-skill" class="bar-fill h-full bg-amber-400 rounded-full" style="width: 50%"></div>
-                </div>
-            </div>
-        </div>
+    drawBtn.addEventListener('click', () => {
+      if (isSpinning) return;
 
-        <div class="flex flex-col md:grid md:grid-cols-12 gap-4 md:gap-6">
-            
-            <div class="order-1 md:order-2 md:col-span-8">
-                <div id="card-area" class="game-card p-5 md:p-8 h-full flex flex-col justify-between relative min-h-[350px] md:min-h-[450px]">
-                    
-                    <div class="hidden md:block absolute right-4 top-4 opacity-10 text-9xl text-slate-300 pointer-events-none">
-                        <i id="bg-icon" class="fa-solid fa-clipboard-question"></i>
-                    </div>
+      isSpinning = true;
+      drawBtn.disabled = true;
+      resultBox.innerHTML = '<span class="label">轉盤轉動中...</span>';
 
-                    <div class="z-10 mt-1">
-                        <div class="flex justify-between items-start">
-                            <span id="card-category" class="inline-block px-3 py-1 rounded-lg bg-orange-100 text-orange-500 text-[10px] md:text-xs font-bold mb-3">
-                                管理決策
-                            </span>
-                            <span class="md:hidden text-xs font-bold text-slate-400 bg-slate-100 px-2 py-1 rounded-full">
-                                第 <span id="mobile-turn-display">1</span>/10 季
-                            </span>
-                        </div>
-                        
-                        <h2 id="card-title" class="text-xl md:text-3xl font-bold mb-3 text-slate-800 leading-tight">準備好開始了嗎？</h2>
-                        <p id="card-desc" class="text-base md:text-lg text-slate-600 leading-relaxed">
-                            每一個決定都會影響球隊的未來。請謹慎選擇你的經營路線。
-                        </p>
-                    </div>
+      // 隨機抽一個獎項（文字顯示用）
+      const randomIndex = Math.floor(Math.random() * prizes.length);
+      const prizeText = prizes[randomIndex];
 
-                    <div class="grid grid-cols-1 gap-3 z-10 mt-6" id="choices-container">
-                        </div>
-                </div>
-            </div>
+      // 設定轉動圈數（越大圈越久）
+      const extraTurns = 4 + Math.floor(Math.random() * 3); // 4~6 圈
 
-            <div class="order-2 md:order-1 md:col-span-4 space-y-4">
-                <div class="hidden md:block game-card p-6 text-center bg-gradient-to-br from-blue-50 to-indigo-50 border-blue-100">
-                    <h2 class="text-slate-400 text-xs font-bold uppercase mb-2">當前賽季</h2>
-                    <div class="text-6xl title-font font-bold text-slate-700 relative inline-block">
-                        <span id="turn-display">1</span>
-                        <span class="text-2xl text-slate-400 absolute -right-8 top-0">/10</span>
-                    </div>
-                    <div class="mt-4 text-sm text-indigo-500 font-bold bg-indigo-100 py-1 px-3 rounded-full inline-block">
-                        <i class="fa-solid fa-bullseye mr-1"></i> 目標：存活 10 季
-                    </div>
-                </div>
+      // 隨機一個停下來的角度（0~360）
+      const randomAngle = Math.floor(Math.random() * 360);
 
-                <div class="game-card p-4 md:p-5 flex flex-col h-64 md:h-80">
-                    <h3 class="text-slate-600 font-bold mb-3 flex items-center text-sm md:text-base">
-                        <i class="fa-regular fa-newspaper mr-2 text-slate-400"></i>
-                        球團日誌
-                    </h3>
-                    <div id="log-container" class="overflow-y-auto flex-1 text-sm space-y-2 pr-1 custom-scroll text-slate-500">
-                        <p class="bg-slate-50 p-2 rounded-lg border border-slate-100 text-xs md:text-sm">
-                            👋 歡迎來到總經理辦公室！
-                        </p>
-                    </div>
-                </div>
-            </div>
+      // 最終角度 = 目前角度 + (多轉幾圈) + 隨機角度
+      const targetRotation = currentRotation + extraTurns * 360 + randomAngle;
 
-        </div>
-    </div>
+      // 記錄目前的角度（取模 360 避免數字太大）
+      currentRotation = targetRotation % 360;
 
-    <div id="wheel-modal" class="fixed inset-0 bg-slate-900/90 z-50 flex items-center justify-center hidden opacity-0 transition-opacity duration-300 backdrop-blur-sm px-4">
-        <div class="bg-white p-6 md:p-8 rounded-3xl w-full max-w-md text-center shadow-2xl transform scale-95 transition-transform duration-300 relative overflow-hidden">
-            <div class="absolute top-0 left-0 w-full h-24 bg-gradient-to-b from-blue-50 to-transparent -z-0"></div>
-            
-            <h2 class="text-xl md:text-2xl font-bold text-slate-700 mb-1 relative z-10">命運大輪盤！</h2>
-            <p class="text-sm text-slate-500 mb-4 relative z-10">社會變因不可預測...</p>
-            
-            <div class="relative flex justify-center mb-6">
-                <div class="wheel-pointer"></div>
-                <div class="wheel-container" id="wheel">
-                    <div class="wheel-segment"></div>
-                </div>
-            </div>
+      // 套用旋轉
+      wheel.style.transform = `rotate(${targetRotation}deg)`;
 
-            <button id="spin-btn" onclick="spinWheel()" class="btn-action bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-3 px-8 rounded-full text-base md:text-lg shadow-lg w-full">
-                <i class="fa-solid fa-rotate mr-2"></i> 轉動命運！
-            </button>
-            
-            <div id="wheel-result" class="hidden mt-4 bg-indigo-50 p-3 rounded-xl border border-indigo-100 animate-bounce">
-                <h3 class="font-bold text-indigo-600 text-lg" id="wheel-event-title">事件標題</h3>
-                <p class="text-sm text-slate-600" id="wheel-event-desc">事件描述</p>
-                <button onclick="closeWheel()" class="mt-2 text-sm text-indigo-400 hover:text-indigo-600 underline py-2">繼續遊戲</button>
-            </div>
-        </div>
-    </div>
+      // 等動畫結束後再顯示結果（動畫時間 4s）
+      setTimeout(() => {
+        isSpinning = false;
+        drawBtn.disabled = false;
 
-    <div id="game-over-modal" class="fixed inset-0 bg-slate-900/90 z-50 flex items-center justify-center hidden px-4">
-        <div class="bg-white p-6 md:p-8 rounded-3xl w-full max-w-md text-center shadow-2xl">
-            <div class="text-5xl md:text-6xl mb-4" id="end-icon">🏁</div>
-            <h2 class="text-2xl md:text-3xl font-bold text-slate-800 mb-2" id="end-title">遊戲結束</h2>
-            <p class="text-slate-500 mb-6 text-sm md:text-base" id="end-message">...</p>
-            <div class="bg-slate-50 p-4 rounded-xl text-left mb-6 text-xs md:text-sm text-slate-600 border border-slate-100">
-                <p class="font-bold text-slate-700 mb-2">📊 體育社會學家評論：</p>
-                <p id="end-critique">...</p>
-            </div>
-            <button onclick="restartGame()" class="btn-action bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-8 rounded-full w-full">
-                <i class="fa-solid fa-rotate-right mr-2"></i> 重新開始
-            </button>
-        </div>
-    </div>
-
-    <script>
-        // --- 遊戲數據與腳本 ---
-        const scenarios = [
-            {
-                id: "cheerleaders",
-                category: "景觀行銷",
-                title: "韓式應援來襲！",
-                desc: "對手引進了超強啦啦隊，球場變成了大型夜店。我們的球場很安靜，但票賣不動了。老闆問你要不要跟進？",
-                icon: "fa-bullhorn",
-                choices: [
-                    {
-                        text: "跟進！全套電音＋啦啦隊",
-                        effect: { funds: -15, purists: -20, casuals: +40, skill: -5 },
-                        log: "🔊 你打造了超吵的主場。資深球迷氣跑了，但一日球迷把票搶光了。"
-                    },
-                    {
-                        text: "不要，我們專注比賽",
-                        effect: { funds: -5, purists: +15, casuals: -15, skill: +5 },
-                        log: "⚾ 球場冷清，營收下滑，但留下的球迷說這是「最後的淨土」。"
-                    }
-                ]
-            },
-            {
-                id: "star_player",
-                category: "球星操作",
-                title: "誰是你的看板球星？",
-                desc: "你需要一位球星來救票房。現在有兩個選擇：一位是實力普普的網紅球員，一位是快退休的傳奇老將。",
-                icon: "fa-user-astronaut",
-                choices: [
-                    {
-                        text: "簽傳奇老將 (賣情懷)",
-                        effect: { funds: -10, purists: +25, casuals: +5, skill: +5 },
-                        log: "🦁「野獸」回歸！懷舊行銷大成功，老球迷都感動哭了。"
-                    },
-                    {
-                        text: "簽網紅球員 (賣流量)",
-                        effect: { funds: +10, purists: -15, casuals: +30, skill: -15 },
-                        log: "📱 網紅球員帶來巨大流量，但他在場上失誤連連，教練很頭痛。"
-                    }
-                ]
-            },
-            {
-                id: "nil_deal",
-                category: "身體經濟",
-                title: "爭議性的內衣廣告",
-                desc: "你的王牌選手收到一份高額的內衣代言邀約。這能賺大錢，但保守派批評這是「物化運動員」。",
-                icon: "fa-shirt",
-                choices: [
-                    {
-                        text: "接！這是NIL權利",
-                        effect: { funds: +20, purists: -10, casuals: +15, skill: -5 },
-                        log: "📸 廣告看板滿街都是。球員變成了性感符號，但外務太多影響訓練。"
-                    },
-                    {
-                        text: "拒絕，保持形象",
-                        effect: { funds: -5, purists: +10, casuals: -5, skill: +10 },
-                        log: "🛡️ 你拒絕了金錢誘惑。球員保持了苦行僧般的專注，備受尊敬。"
-                    }
-                ]
-            },
-            {
-                id: "merch_fetish",
-                category: "裝備拜物教",
-                title: "要賣什麼周邊？",
-                desc: "行銷部想推新商品。要賣超貴的「選手同款頂級車」，還是便宜的「推廣版」？",
-                icon: "fa-bicycle",
-                choices: [
-                    {
-                        text: "賣超貴頂級款 (割韭菜)",
-                        effect: { funds: +30, purists: -10, casuals: +5, skill: 0 },
-                        log: "💰 中產階級瘋狂搶購，即便他們騎不出差別。你賺翻了。"
-                    },
-                    {
-                        text: "賣平價推廣版 (做公益)",
-                        effect: { funds: +5, purists: +5, casuals: +5, skill: +5 },
-                        log: "🚲 利潤很薄，但路上騎車的人變多了，形象加分。"
-                    }
-                ]
-            },
-            {
-                id: "burnout",
-                category: "職業倦怠",
-                title: "球員累壞了",
-                desc: "主力球員出現職業倦怠 (Burnout)。贊助商堅持要他出席決賽前的所有活動，不然就撤資。",
-                icon: "fa-battery-quarter",
-                choices: [
-                    {
-                        text: "逼他去 (為了錢)",
-                        effect: { funds: +15, purists: -5, casuals: +10, skill: -25 },
-                        log: "📉 球員在決賽徹底崩盤，表現失常。雖然賺了錢，但輸了比賽。"
-                    },
-                    {
-                        text: "讓他休息 (為了人)",
-                        effect: { funds: -15, purists: +10, casuals: -10, skill: +15 },
-                        log: "💤 贊助商氣跑了，但球員充飽電，在決賽打出感人表現。"
-                    }
-                ]
-            }
-        ];
-
-        // 輪盤事件資料
-        const wheelEvents = [
-            { title: "🌀 颱風延賽", desc: "比賽取消，雖然損失票房，但球員獲得寶貴休息。", effect: { funds: -10, skill: +15 }, color: "#FF8B94" },
-            { title: "💃 啦啦隊戀情曝光", desc: "流量大爆炸！但部分死忠粉覺得球隊不務正業。", effect: { casuals: +25, purists: -15 }, color: "#FFAAA5" },
-            { title: "👴 阿公舞團爆紅", desc: "場邊的阿公阿嬤跳舞影片紅到國外，形象大加分！", effect: { casuals: +20, funds: +5 }, color: "#FFD3B6" },
-            { title: "⚖️ 裁判誤判炎上", desc: "全場球迷團結一致罵裁判，凝聚力意外提升。", effect: { purists: +10, casuals: -5 }, color: "#DCEDC1" },
-            { title: "💸 神秘金主斗內", desc: "一位隱形富豪覺得你們很努力，贊助了一筆錢。", effect: { funds: +20 }, color: "#A8E6CF" },
-            { title: "🏟️ 球場停電", desc: "尷尬了！比賽中斷，只好退票賠償，體驗極差。", effect: { funds: -15, casuals: -10 }, color: "#84D0FF" }
-        ];
-
-        // --- 遊戲狀態 ---
-        let state = {
-            funds: 50,
-            purists: 50,
-            casuals: 50,
-            skill: 50,
-            turn: 1,
-            maxTurns: 10
-        };
-
-        // --- DOM 元素 ---
-        const bars = {
-            funds: document.getElementById('bar-funds'),
-            purists: document.getElementById('bar-purists'),
-            casuals: document.getElementById('bar-casuals'),
-            skill: document.getElementById('bar-skill')
-        };
-        const turnDisplay = document.getElementById('turn-display');
-        const mobileTurnDisplay = document.getElementById('mobile-turn-display');
-        const logContainer = document.getElementById('log-container');
-        const cardArea = {
-            title: document.getElementById('card-title'),
-            desc: document.getElementById('card-desc'),
-            cat: document.getElementById('card-category'),
-            icon: document.getElementById('bg-icon'),
-            choices: document.getElementById('choices-container')
-        };
-        const wheelModal = document.getElementById('wheel-modal');
-        const wheelResult = document.getElementById('wheel-result');
-        const wheelEl = document.getElementById('wheel');
-        const spinBtn = document.getElementById('spin-btn');
-
-        // --- 核心邏輯 ---
-
-        function initGame() {
-            state = { funds: 50, purists: 50, casuals: 50, skill: 50, turn: 1, maxTurns: 10 };
-            updateUI();
-            nextTurn();
-            document.getElementById('game-over-modal').classList.add('hidden');
-            logContainer.innerHTML = '<p class="bg-indigo-50 p-2 rounded-lg border border-indigo-100 text-indigo-800 text-xs md:text-sm">👋 歡迎上任！請在「商業」與「競技」間取得平衡。</p>';
-        }
-
-        function updateUI() {
-            for (let key in bars) {
-                bars[key].style.width = `${state[key]}%`;
-                // 顏色變化
-                if (state[key] < 20) bars[key].classList.replace('bg-' + getKeyColor(key) + '-400', 'bg-red-500');
-                else bars[key].className = `bar-fill h-full bg-${getKeyColor(key)}-400 rounded-full`;
-            }
-            turnDisplay.innerText = state.turn;
-            mobileTurnDisplay.innerText = state.turn;
-        }
-
-        function getKeyColor(key) {
-            if(key === 'funds') return 'emerald';
-            if(key === 'purists') return 'blue';
-            if(key === 'casuals') return 'rose';
-            if(key === 'skill') return 'amber';
-        }
-
-        function checkGameOver() {
-            if (state.funds <= 0) return { type: 'lose', title: "破產啦！", msg: "沒錢萬萬不能，球隊被拍賣了。", critique: "在資本主義社會，沒有資金就沒有話語權，去賺錢吧窮鬼"現在你獲得了獎品是陳明豪的ig:Ccminha };
-            if (state.purists <= 0) return { type: 'lose', title: "失去靈魂", msg: "死忠球迷全跑光了，球隊變成了馬戲團。", critique: "過度追求理想，現實卻很骨感的讓體育失去了最純粹的競爭意義。" };
-            if (state.casuals <= 0) return { type: 'lose', title: "沒人氣", msg: "門可羅雀，沒有票房支撐，聯盟倒閉。", critique: "職業運動本質是體驗經濟，拒絕大眾就是拒絕生存，但可以接受下一餐吃麥噹現在你獲得了獎品是陳明豪的ig:Ccminha" };
-            if (state.skill <= 0) return { type: 'lose', title: "戰績崩壞", msg: "一直輸球，連最鐵的球迷都看不下去了。", critique: "無論包裝多好，競技實力仍然是體育的核心。建議你現在放下手機，趕快去現在你獲得了獎品是陳明豪的ig:Ccminha };
-            if (state.turn > state.maxTurns) return { type: 'win', title: "傳奇經理人", msg: "恭喜！你成功在現實與理想中找到了平衡。", critique: "你證明了體育既可以是生意，也可以是信仰。現在你獲得了獎品是陳明豪的ig:Ccminha，完美！" };
-            
-            return null;
-        }
-
-        function nextTurn() {
-            const status = checkGameOver();
-            if (status) {
-                endGame(status);
-                return;
-            }
-
-            // 檢查是否觸發輪盤 (每3回合: 3, 6, 9)
-            if (state.turn % 3 === 0 && state.turn !== 10) { 
-                openWheel();
-            } else {
-                // 一般回合：隨機抽卡
-                const scenario = scenarios[Math.floor(Math.random() * scenarios.length)];
-                renderCard(scenario);
-            }
-        }
-
-        function renderCard(scenario) {
-            cardArea.title.innerText = scenario.title;
-            cardArea.desc.innerText = scenario.desc;
-            cardArea.cat.innerText = scenario.category;
-            cardArea.icon.className = `fa-solid ${scenario.icon}`;
-            
-            cardArea.choices.innerHTML = '';
-            scenario.choices.forEach(choice => {
-                const btn = document.createElement('button');
-                btn.className = "btn-action w-full bg-slate-50 hover:bg-white text-left p-3 md:p-4 rounded-xl border-2 border-slate-100 hover:border-blue-400 group flex flex-col md:flex-row md:items-center justify-between";
-                
-                // 提示標籤
-                let hints = [];
-                if(choice.effect.funds > 0) hints.push('<span class="bg-green-100 text-green-600 px-1.5 py-0.5 rounded text-[10px] font-bold mr-1">+資金</span>');
-                if(choice.effect.purists > 0) hints.push('<span class="bg-blue-100 text-blue-600 px-1.5 py-0.5 rounded text-[10px] font-bold mr-1">+死忠</span>');
-                if(choice.effect.casuals > 0) hints.push('<span class="bg-pink-100 text-pink-600 px-1.5 py-0.5 rounded text-[10px] font-bold mr-1">+娛樂</span>');
-                
-                btn.innerHTML = `
-                    <div class="font-bold text-slate-700 group-hover:text-blue-500 mb-1 md:mb-0 text-sm md:text-base">${choice.text}</div>
-                    <div class="flex flex-wrap gap-1">${hints.join('')}</div>
-                `;
-                btn.onclick = () => handleChoice(choice);
-                cardArea.choices.appendChild(btn);
-            });
-        }
-
-        function handleChoice(choice) {
-            applyEffects(choice.effect);
-            addLog(`第 ${state.turn} 季`, choice.log, 'slate');
-            state.turn++;
-            updateUI();
-            nextTurn();
-        }
-
-        function applyEffects(effects) {
-            if(effects.funds) state.funds = Math.min(100, Math.max(0, state.funds + effects.funds));
-            if(effects.purists) state.purists = Math.min(100, Math.max(0, state.purists + effects.purists));
-            if(effects.casuals) state.casuals = Math.min(100, Math.max(0, state.casuals + effects.casuals));
-            if(effects.skill) state.skill = Math.min(100, Math.max(0, state.skill + effects.skill));
-        }
-
-        function addLog(badge, text, color) {
-            const entry = document.createElement('div');
-            entry.className = `bg-${color}-50 p-2 rounded-lg border border-${color}-100 animate-pulse text-xs md:text-sm`;
-            entry.innerHTML = `<span class="text-[10px] font-bold text-${color}-500 bg-${color}-100 px-1 rounded mr-2">${badge}</span><span class="text-slate-600">${text}</span>`;
-            logContainer.insertBefore(entry, logContainer.firstChild);
-        }
-
-        // --- 輪盤邏輯 ---
-        
-        function openWheel() {
-            wheelModal.classList.remove('hidden');
-            // 強制重繪以觸發淡入
-            void wheelModal.offsetWidth;
-            wheelModal.classList.add('opacity-100');
-            wheelResult.classList.add('hidden');
-            spinBtn.disabled = false;
-            spinBtn.classList.remove('opacity-50', 'cursor-not-allowed');
-            spinBtn.innerHTML = '<i class="fa-solid fa-rotate mr-2"></i> 轉動命運！';
-            wheelEl.style.transform = 'rotate(0deg)';
-        }
-
-        function spinWheel() {
-            spinBtn.disabled = true;
-            spinBtn.classList.add('opacity-50', 'cursor-not-allowed');
-            spinBtn.innerText = "命運轉動中...";
-
-            // 隨機選一個事件
-            const eventIndex = Math.floor(Math.random() * wheelEvents.length);
-            const selectedEvent = wheelEvents[eventIndex];
-            
-            // 計算角度 (6個區塊，每個60度)
-            const segmentAngle = 360 / 6;
-            const randomOffset = Math.random() * 40 - 20;
-            const targetRotation = 1440 + (360 - (eventIndex * segmentAngle)) + randomOffset;
-            wheelEl.style.transform = `rotate(${targetRotation}deg)`;
-
-            setTimeout(() => {
-                showWheelResult(selectedEvent);
-            }, 4000);
-        }
-
-        function showWheelResult(event) {
-            const titleEl = document.getElementById('wheel-event-title');
-            const descEl = document.getElementById('wheel-event-desc');
-            
-            titleEl.innerText = event.title;
-            descEl.innerText = event.desc;
-            wheelResult.classList.remove('hidden');
-            
-            applyEffects(event.effect);
-            addLog('命運事件', `${event.title} - ${event.desc}`, 'indigo');
-            updateUI();
-        }
-
-        function closeWheel() {
-            wheelModal.classList.remove('opacity-100');
-            setTimeout(() => {
-                wheelModal.classList.add('hidden');
-                state.turn++; // 輪盤結束後才進入下一回合
-                updateUI();
-                // 繼續一般流程
-                const scenario = scenarios[Math.floor(Math.random() * scenarios.length)];
-                renderCard(scenario);
-            }, 300);
-        }
-
-        // --- 結束遊戲 ---
-
-        function endGame(status) {
-            const modalEl = document.getElementById('game-over-modal');
-            const endIcon = document.getElementById('end-icon');
-            const endTitle = document.getElementById('end-title');
-            
-            modalEl.classList.remove('hidden');
-            document.getElementById('end-message').innerText = status.msg;
-            document.getElementById('end-critique').innerText = status.critique;
-            if (status.type === 'win') {
-                endIcon.innerText = "🏆";
-                endTitle.innerText = status.title;
-                endTitle.className = "text-2xl md:text-3xl font-bold text-yellow-500 mb-2";
-            } else {
-                endIcon.innerText = "😭";
-                endTitle.innerText = status.title;
-                endTitle.className = "text-2xl md:text-3xl font-bold text-slate-700 mb-2";
-            }
-        }
-
-        function restartGame() {
-            initGame();
-        }
-
-        // 啟動遊戲
-        initGame();
-
-    </script>
+        resultBox.innerHTML = `
+          <span class="label">恭喜！本次抽中：</span>
+          <span class="value">${prizeText}</span>
+        `;
+      }, 4000); // 要和 CSS transition 的時間一樣
+    });
+  </script>
 </body>
 </html>
