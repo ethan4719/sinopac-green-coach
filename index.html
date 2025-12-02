@@ -125,7 +125,8 @@
 
     .curtain-content {
       position: relative;
-      z-index: 1;
+      /* 【已修復】改為 3，解決按鈕被遮擋的問題 */
+      z-index: 3;
       height: 100%;
       padding: 22px 16px 18px;
       display: flex;
@@ -348,7 +349,6 @@
     <div class="phone-notch"></div>
     <div class="phone-inner">
 
-      <!-- 歡迎門簾畫面 -->
       <section id="screenWelcome" class="screen screen-welcome active">
         <div class="curtain">
           <div id="curtainLeft" class="curtain-panel left"></div>
@@ -386,7 +386,6 @@
         </div>
       </section>
 
-      <!-- 抽獎畫面 -->
       <section id="screenLottery" class="screen screen-lottery">
         <header class="lottery-header">
           <h2>我的歐趴糖是…？</h2>
@@ -440,7 +439,7 @@
     const resultText  = document.getElementById('resultText');
     const placeholder = document.getElementById('placeholder');
 
-    // 依照你現在 GitHub 上的檔名
+    // 已還原為原始檔名
     const prizes = [
       { name: '小熊餅乾（藍色）',  img: 'koala-blue.jpg.JPG'  },
       { name: '小熊餅乾（黑色）',  img: 'koala- black.jpg.JPG' },
