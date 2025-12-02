@@ -2,7 +2,7 @@
 <html lang="zh-Hant">
 <head>
   <meta charset="UTF-8" />
-  <title>中興大學學務處 歐趴小天堂</title>
+  <title>鵝鵝歐趴小禮堂</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <style>
@@ -56,7 +56,7 @@
       background: #fbe7c4;
     }
 
-    /* 共用：兩個畫面 */
+    /* 兩個畫面共用 */
     .screen {
       position: absolute;
       inset: 0;
@@ -66,12 +66,11 @@
       align-items: center;
       justify-content: center;
     }
-
     .screen.active {
       display: flex;
     }
 
-    /* ======= 歡迎畫面（門簾） ======= */
+    /* ========= 歡迎畫面（門簾） ========= */
     .screen-welcome {
       background: radial-gradient(circle at top, #f7d5a3 0, #fbe7c4 40%, #f2c48c 100%);
       color: #7a2c16;
@@ -93,7 +92,7 @@
       position: absolute;
       top: 0;
       bottom: 0;
-      width: 55%;
+      width: 60%;
       background: repeating-linear-gradient(
         135deg,
         #f2a365,
@@ -102,26 +101,26 @@
         #fbe7c4 24px
       );
       box-shadow: inset 0 0 20px rgba(0,0,0,0.25);
-      transition: transform 1s ease;
+      transition: transform 0.9s ease;
       z-index: 2;
     }
-
     .curtain-panel.left {
       left: 0;
       border-right: 3px solid rgba(0,0,0,0.15);
+      transform: translateX(0);
     }
-
     .curtain-panel.right {
       right: 0;
       border-left: 3px solid rgba(0,0,0,0.15);
+      transform: translateX(0);
     }
 
-    .curtain.open .curtain-panel.left {
-      transform: translateX(-100%);
+    /* 打開時往外滑 */
+    .curtain-open-left {
+      transform: translateX(-110%);
     }
-
-    .curtain.open .curtain-panel.right {
-      transform: translateX(100%);
+    .curtain-open-right {
+      transform: translateX(110%);
     }
 
     .curtain-content {
@@ -133,24 +132,20 @@
       flex-direction: column;
       align-items: center;
       justify-content: space-between;
-      background:
-        radial-gradient(circle at top, rgba(255,255,255,0.9) 0, rgba(255,255,255,0) 50%),
-        url('') center/cover no-repeat;
+      background: radial-gradient(circle at top, rgba(255,255,255,0.9) 0, rgba(255,255,255,0) 55%);
     }
 
     .welcome-title {
       text-align: center;
       margin-top: 12px;
     }
-
     .welcome-title h1 {
       font-size: 22px;
       letter-spacing: 1px;
       text-shadow: 0 2px 4px rgba(255,255,255,0.8);
     }
-
     .welcome-title p {
-      margin-top: 10px;
+      margin-top: 8px;
       font-size: 13px;
       opacity: 0.9;
     }
@@ -159,18 +154,16 @@
       margin-top: 28px;
       padding: 10px 16px;
       border-radius: 18px;
-      background: rgba(255,255,255,0.92);
+      background: rgba(255,255,255,0.95);
       box-shadow: 0 4px 12px rgba(0,0,0,0.15);
       text-align: center;
       border: 2px dashed #e28b4a;
     }
-
     .welcome-door-sign span.big {
       display: block;
       font-size: 18px;
       font-weight: 800;
     }
-
     .welcome-door-sign span.small {
       display: block;
       margin-top: 6px;
@@ -185,18 +178,12 @@
       justify-content: center;
       align-items: center;
     }
-
     .goose-row span {
       display: inline-block;
       animation: goose-bob 1s ease-in-out infinite alternate;
     }
-
-    .goose-row span:nth-child(2) {
-      animation-delay: 0.25s;
-    }
-    .goose-row span:nth-child(3) {
-      animation-delay: 0.5s;
-    }
+    .goose-row span:nth-child(2) { animation-delay: 0.25s; }
+    .goose-row span:nth-child(3) { animation-delay: 0.5s; }
 
     @keyframes goose-bob {
       from { transform: translateY(0); }
@@ -211,7 +198,7 @@
     }
 
     .btn-enter {
-      margin-top: 16px;
+      margin-top: 12px;
       padding: 11px 28px;
       border-radius: 26px;
       border: none;
@@ -224,10 +211,16 @@
       box-shadow: 0 6px 16px rgba(0,0,0,0.35);
       transition: transform 0.1s, box-shadow 0.1s, opacity 0.2s;
     }
-
     .btn-enter:active {
       transform: translateY(2px);
       box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+    }
+
+    .click-hint {
+      margin-top: 6px;
+      font-size: 12px;
+      text-align: center;
+      opacity: 0.9;
     }
 
     .welcome-footer {
@@ -237,7 +230,7 @@
       text-align: center;
     }
 
-    /* ======= 抽獎畫面 ======= */
+    /* ========= 抽獎畫面 ========= */
     .screen-lottery {
       background: #fbe7c4;
       color: #7a2c16;
@@ -249,12 +242,10 @@
       margin-top: 8px;
       text-align: center;
     }
-
     .lottery-header h2 {
       font-size: 20px;
       letter-spacing: 2px;
     }
-
     .lottery-header p {
       margin-top: 4px;
       font-size: 12px;
@@ -281,7 +272,6 @@
       transition: opacity 0.4s ease;
       display: none;
     }
-
     #prizeImage.show {
       opacity: 1;
     }
@@ -309,12 +299,10 @@
       cursor: pointer;
       transition: transform 0.1s, box-shadow 0.1s, opacity 0.2s;
     }
-
     .btn-draw:active {
       transform: translateY(2px);
       box-shadow: 0 2px 8px rgba(0,0,0,0.6);
     }
-
     .btn-draw:disabled {
       opacity: 0.4;
       cursor: not-allowed;
@@ -329,12 +317,10 @@
       color: #7a2c16;
       min-height: 46px;
     }
-
     .result-text span.main {
       font-size: 16px;
       font-weight: 700;
     }
-
     .result-text span.sub {
       display: block;
       font-size: 12px;
@@ -364,19 +350,22 @@
 
       <!-- 歡迎門簾畫面 -->
       <section id="screenWelcome" class="screen screen-welcome active">
-        <div class="curtain" id="curtain">
-          <div class="curtain-panel left"></div>
-          <div class="curtain-panel right"></div>
+        <div class="curtain">
+          <div id="curtainLeft" class="curtain-panel left"></div>
+          <div id="curtainRight" class="curtain-panel right"></div>
 
           <div class="curtain-content">
             <div class="welcome-title">
-              <h1>歡迎來到<br>中興大學學務處歐趴小天堂</h1>
-              <p>拉開門簾，跟著鵝鵝鴨鴨，一起走進期末歐趴的小宇宙吧 🪿</p>
+              <h1>歡迎來到鵝鵝歐趴小禮堂</h1>
+              <p>中興大學學務處歐趴小天堂</p>
             </div>
 
             <div class="welcome-door-sign">
               <span class="big">歐趴小天堂</span>
-              <span class="small">只要認真 + 一點點運氣，<br>歐趴糖就會降臨在你身上 ✨</span>
+              <span class="small">
+                這裡有認真讀書 + 一點點好運，<br>
+                就能讓歐趴糖降臨在你手上 ✨
+              </span>
             </div>
 
             <div class="goose-row">
@@ -384,10 +373,11 @@
             </div>
 
             <p class="enter-tip">
-              鵝鵝說：<br>
-              「準備好了就按下下面的按鈕，我們帶你去抽歐趴糖！」</p>
+              鵝鵝說：「準備好了就一起進去抽歐趴糖吧！」
+            </p>
 
             <button class="btn-enter" id="enterBtn">進入歐趴小天堂</button>
+            <p class="click-hint">點擊開始進入</p>
 
             <p class="welcome-footer">
               中興大學 學務處 課外組 敬祝<br>期末考順利、全科歐趴！
@@ -400,7 +390,7 @@
       <section id="screenLottery" class="screen screen-lottery">
         <header class="lottery-header">
           <h2>我的歐趴糖是…？</h2>
-          <p>按下按鈕，讓轉盤用餅乾幫你決定今天的幸運指數 🍪</p>
+          <p>按下按鈕，讓餅乾轉盤幫你決定今天的幸運指數 🍪</p>
         </header>
 
         <main class="image-wrapper">
@@ -425,30 +415,32 @@
   </div>
 
   <script>
-    // ========= 頁面切換：門簾打開後進入抽獎 =========
+    // ======== 門簾動畫＋切換畫面 ========
     const screenWelcome = document.getElementById('screenWelcome');
     const screenLottery = document.getElementById('screenLottery');
-    const curtain = document.getElementById('curtain');
-    const enterBtn = document.getElementById('enterBtn');
+    const enterBtn      = document.getElementById('enterBtn');
+    const curtainLeft   = document.getElementById('curtainLeft');
+    const curtainRight  = document.getElementById('curtainRight');
 
     enterBtn.addEventListener('click', () => {
-      // 門簾打開動畫
-      curtain.classList.add('open');
+      // 先把門簾往外拉開
+      curtainLeft.classList.add('curtain-open-left');
+      curtainRight.classList.add('curtain-open-right');
 
-      // 過一小段時間再切換畫面
+      // 再切到抽獎畫面
       setTimeout(() => {
         screenWelcome.classList.remove('active');
         screenLottery.classList.add('active');
-      }, 1100); // 要比 CSS transition 時間略長
+      }, 950); // 略大於 CSS transition 0.9s
     });
 
-    // ========= 抽獎邏輯：先輪播，再決定結果 =========
+    // ======== 抽獎邏輯：先輪播，再決定結果 ========
     const drawBtn     = document.getElementById('drawBtn');
     const prizeImage  = document.getElementById('prizeImage');
     const resultText  = document.getElementById('resultText');
     const placeholder = document.getElementById('placeholder');
 
-    // 依照你目前 GitHub 上的檔名（有 .JPG & 空白）
+    // 依照你現在 GitHub 上的檔名
     const prizes = [
       { name: '小熊餅乾（藍色）',  img: 'koala-blue.jpg.JPG'  },
       { name: '小熊餅乾（黑色）',  img: 'koala- black.jpg.JPG' },
@@ -476,35 +468,31 @@
       prizeImage.style.display = 'block';
       prizeImage.classList.remove('show');
 
-      // ===== 先開始輪播四種餅乾（像轉盤 =====
+      // 先開始輪播四種餅乾（像轉盤）
       let spinIndex = 0;
       spinIntervalId = setInterval(() => {
         const p = imagePrizes[spinIndex % imagePrizes.length];
         prizeImage.src = p.img;
         prizeImage.classList.add('show');
         spinIndex++;
-      }, 120); // 每 120ms 換一張，看起來像快速轉動
+      }, 120); // 120ms 換一張，看起來像快速轉動
 
-      // ===== 設定轉動總時間，之後停下來決定真正結果 =====
+      // 設定轉動總時間，之後停下來決定真正結果
       const spinDuration = 1800 + Math.random() * 700; // 約 1.8~2.5 秒
 
       setTimeout(() => {
         clearInterval(spinIntervalId);
 
-        // 抽真正的獎（含再抽一次）
         const finalPrize = prizes[Math.floor(Math.random() * prizes.length)];
 
         if (finalPrize.img) {
-          // 有圖片的實體獎品
           prizeImage.src = finalPrize.img;
           prizeImage.classList.add('show');
-
           resultText.innerHTML = `
             <span class="main">你的歐趴糖是：${finalPrize.name}</span>
             <span class="sub">祝你期末考全部順利歐趴！</span>
           `;
         } else {
-          // 抽到「再抽一次」😈
           prizeImage.style.display = 'none';
           placeholder.style.display = 'block';
           placeholder.innerHTML =
